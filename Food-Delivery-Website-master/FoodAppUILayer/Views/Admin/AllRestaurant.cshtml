@@ -1,0 +1,99 @@
+﻿@model IEnumerable<FoodAppDALLayer.Models.Restaurant>
+
+@{
+    ViewBag.Title = "AllRestaurant";
+}
+<style>
+    .equal-width {
+        width: 1%;
+    }
+</style>
+<h2 class="text-center">Restaurant</h2>
+
+
+<div class="text-black">
+    <h3>
+        <a href="@Url.Action("AddRestaurants")" style="color: forestgreen !important; text-decoration: none">
+            <i class="bi bi-building-fill-add" style="color:forestgreen"></i> Add Restaurant
+        </a>
+    </h3>
+</div>
+<table class="table table-hover">
+    <thead class="table-info">
+        <tr>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.RestId)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th class="equal-width">
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th class="equal-width"> Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var restaurant in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.RestId)
+                </td>
+                <td>
+                    <img src="data:image;base64,@restaurant.Image" width="100" height="100" alt="Image" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Mobile)
+                </td>
+                <th class="equal-width">
+                    @Html.DisplayFor(model => restaurant.City)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Latitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => restaurant.Longitude)
+                </td>
+                <td>
+                    <h3>
+                        <a href="@Url.Action("EditRestaurant", new { id = restaurant.RestId})" style="color:deepskyblue !important; text-decoration: none">
+                            <i class="bi-pencil-square" style="color: deepskyblue "></i>
+                        </a>
+
+                        <a href="@Url.Action("DeleteRest", new { id = restaurant.RestId}) " style="color: orange !important; text-decoration: none">
+                            <i class="bi bi-trash" style="color: orange"></i>
+                        </a>
+                    </h3>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

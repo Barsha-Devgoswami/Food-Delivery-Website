@@ -1,0 +1,58 @@
+﻿@model IEnumerable<FoodAppUILayer.Models.CategoryViewModel>
+
+@{
+    ViewBag.Title = "All Categories";
+}
+
+<h2 class="text-center">All Categories</h2>
+
+
+<div class="text-black">
+    <h3>
+        <a href="@Url.Action("AddCategory")" style="color: forestgreen !important; text-decoration: none">
+            <i class="bi bi-plus-circle" style="color:forestgreen"></i> Add Categories
+        </a>
+    </h3>
+</div>
+<table class="table">
+    <thead class="table-success">
+        <tr>
+            <th>
+                Category ID
+            </th>
+            <th>
+                Category Name
+            </th>
+            <th>
+                Action
+            </th>
+  
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+             
+                <td>
+                    <h3>
+                        <a href="@Url.Action("EditCategory", new { id = item.CategoryId })" style="color:deepskyblue !important; text-decoration: none">
+                            <i class="bi-pencil-square" style="color: deepskyblue "></i>
+                        </a>
+
+                        <a href="@Url.Action("DeleteCategory", new { id = item.CategoryId }) " style="color: orange !important; text-decoration: none">
+                            <i class="bi bi-trash" style="color: orange"></i>
+                        </a>
+                    </h3>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

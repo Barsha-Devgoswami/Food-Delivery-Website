@@ -1,0 +1,95 @@
+﻿@model IEnumerable<FoodAppDALLayer.Models.Order>
+
+@{
+    ViewBag.Title = "AllOrders";
+}
+
+
+<h2 class="text-center">All Orders</h2>
+
+
+<table class="table table-bordered">
+    <thead class="table-warning">
+        <tr>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.OrderId)
+            </th>
+            <td>
+                @Html.DisplayNameFor(model => model.PaymentType)
+            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.Qty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeliveryAddress)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.OrderStatus)
+            </th>
+
+
+         
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfOrder)
+            </th>
+
+
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentStatus)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+               
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Qty)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeliveryAddress)
+                </td>
+             
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderStatus)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfOrder)
+                </td>
+
+
+                <th>
+                    @Html.DisplayFor(model => item.PaymentStatus)
+                </th>
+                <td>
+
+                    <h3>
+                        <a href="@Url.Action("EditOrder", new { oderId = item.OrderId })" style="color:deepskyblue !important; text-decoration: none">
+                            <i class="bi-pencil-square" style="color: deepskyblue "></i>
+                        </a>
+
+                    </h3>
+                   
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

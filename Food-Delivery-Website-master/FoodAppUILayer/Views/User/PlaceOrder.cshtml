@@ -1,0 +1,173 @@
+﻿﻿@model FoodAppUILayer.Models.OrderViewModel
+
+@{
+    ViewBag.Title = "Place Order";
+}
+
+<div class="container">
+    <h3>Order Summary</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.OrderDetails != null)
+            {
+                foreach (var detail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@detail.FoodItemName</td>
+                        <td>@detail.Quantity</td>
+                        <td>@detail.Price</td>
+                        <td>@detail.Subtotal</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">No order details available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Delivery Charge: &#8377;<span id="deliveryCharge">30</span></p>
+    <p>Total: &#8377;<span id="totalPrice">@Model.TotalAmount</span></p>
+    <p>SubTotal: &#8377;<span id="subTotalPrice">@Model.TotalAmount</span></p>
+
+    @if (Model.Addresses != null && Model.Addresses.Any())
+    {
+        <h4 class="ms-3">Saved Addresses</h4>
+        <div class="card-deck col-12">
+            @foreach (var savedAddress in Model.Addresses)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Address</h5>
+                        <p class="card-text">
+                            @savedAddress.Street, @savedAddress.City, @savedAddress.State, @savedAddress.PostalCode
+                        </p>
+                     
+
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="btn btn-outline-primary ms-3 mb-2" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Add New Address
+        </button>
+        <div class="collapse" id="collapseExample">
+            @Html.Partial("_AddressLayout", new FoodAppUILayer.Models.AddressViewModel())
+        </div>
+    }
+    else
+    {
+        <div id="newAddressForm">
+            @Html.Partial("_AddressLayout", new FoodAppUILayer.Models.AddressViewModel())
+        </div>
+    }
+
+
+
+<form id="placeOrderForm" class="ms-3" method="post" action="@Url.Action("OrderConfirm", "User")">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="subtotal" id="subtotal" value="@Model.TotalAmount" />
+    <input type="hidden" name="userId" value="@Model.UserId" />
+    <select id="paymentType" name="paymentType" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" required>
+        
+        <option selected="COD">COD</option>
+    </select>
+    @if (Model.Addresses != null && Model.Addresses.Any())
+    {
+        foreach (var savedAddress in Model.Addresses)
+        {
+            <div class="form-check">
+                <input class="form-check-input address-radio" type="radio" name="selectedAddressId" id="address_@savedAddress.Id" value="@savedAddress.Id"
+                       data-latitude="@savedAddress.Latitude" data-longitude="@savedAddress.Longitude" required>
+                <label class="form-check-label" for="address_@savedAddress.Id">
+                    Confirm Address - @savedAddress.Street, @savedAddress.City, @savedAddress.State, @savedAddress.PostalCode
+                </label>
+            </div>
+        }
+    }
+    <button type="submit" id="payNowButton" class="btn btn-success mt-3 mb-4">Confirm Order</button>
+</form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+            $('.address-radio').change(function () {
+                var userLatitude = parseFloat($(this).data('latitude'));
+                var userLongitude = parseFloat($(this).data('longitude'));
+                console.log(userLatitude);
+                console.log(userLongitude);
+                calculateAndDisplayDeliveryCharge(userLatitude, userLongitude);
+            });
+        });
+       function calculateAndDisplayDeliveryCharge(userLatitude, userLongitude) {
+
+       var destinationLatitude = @Html.Raw(Json.Encode(Model.destinationLatitude));
+       var destinationLongitude = @Html.Raw(Json.Encode(Model.destinationLongitude));
+
+           console.log(destinationLatitude);
+           console.log(destinationLongitude);
+       var distance = calculateDistance(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+       var deliveryCharge = calculateDeliveryCharge(distance);
+
+           console.log(deliveryCharge);
+           $('#deliveryCharge').text(deliveryCharge.toFixed(2));
+
+
+       updateSubTotal();
+     }
+        function updateSubTotal() {
+            var subtotal = parseFloat($('#totalPrice').text());
+            var deliveryCharge = parseFloat($('#deliveryCharge').text());
+            var subTotalWithDeliveryCharge = subtotal + deliveryCharge;
+            $('#subTotalPrice').text(subTotalWithDeliveryCharge.toFixed(2));
+            $('#subtotal').val(subTotalWithDeliveryCharge.toFixed(2));
+        }
+
+    function calculateDistance(userLatitude, userLongitude, destinationLatitude, destinationLongitude) {
+        var R = 6371; 
+        var dLat = deg2rad(destinationLatitude - userLatitude);
+        var dLon = deg2rad(destinationLongitude - userLongitude);
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(userLatitude)) * Math.cos(deg2rad(destinationLatitude)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var distance = R * c;
+        return distance;
+    }
+
+    // Define the deg2rad function
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    function calculateDeliveryCharge(distance) {
+        if (distance < 30) {
+            return 38;
+        } else {
+            return distance * 1;
+        }
+        }
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+}

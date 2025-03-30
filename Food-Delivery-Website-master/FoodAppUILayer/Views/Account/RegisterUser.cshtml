@@ -1,0 +1,98 @@
+﻿@model FoodAppDALLayer.Models.User
+@using CaptchaMvc.HtmlHelpers
+@{
+    ViewBag.Title = "RegisterUser";
+}
+
+
+
+<div class="container mt-3 " style="background-image: url('@Url.Content("~/Images/register.jpg" )'); background-size:cover;">
+    <div class="row">
+        <div class="col m-4 w-100 h-100">
+            <div class="col-12 text-white">
+                <h1>Welcome !</h1>
+            </div>
+          
+
+            <div class="col-12 text-white" style="margin-top:100px;color:white !important">
+                <p class="">If you have account already @Html.ActionLink("Login", "UserLogin")</p>
+            </div>
+
+        </div>
+        <div class="col mt-4 mb-4 text-white">
+
+            <h2>SignUp - User</h2>
+
+            @using (Html.BeginForm("RegisterUser", "Account", FormMethod.Post, new { @class = "col-md-6" }))
+            {
+                @Html.AntiForgeryToken()
+
+        <div class="form-horizontal text-white">
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group col-12">
+                <p>First Name</p>
+              
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+         
+            <div class="form-group">
+               <p>Last Name</p>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+       
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Mobile, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div> @Html.Captcha(5)</div>
+            <div class="form-group mt-3 text-center">
+                <div class="col-md-offset-2 col-md-10">
+
+                    <input type="submit" value="SignUp" class="btn btn-default bg-info" />
+                </div>
+            </div>
+        </div>
+            }
+
+        </div>
+
+    </div>
+</div>

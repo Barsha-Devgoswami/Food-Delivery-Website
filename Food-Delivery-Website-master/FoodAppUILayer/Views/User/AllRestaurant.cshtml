@@ -1,0 +1,86 @@
+﻿@model IEnumerable<FoodAppDALLayer.Models.Restaurant>
+
+@{
+    ViewBag.Title = "AllRestaurant";
+
+}
+
+
+<P class="text-center shadow-lg bg-success text-white rounded">@TempData["Success"]</P>
+
+<div class="container">
+ 
+    <div class="row mt-3" id="myContainer">
+        @foreach (var order in ViewBag.Top5Orders)
+        {
+            <div class="col-lg-3 col-md-3 col-sm-6 mb-4">
+                <div class="card h-100 shadow p-3  bg-body rounded">
+                    <img src="data:image;base64,@order.FoodItem.Image" class="card-img-top" alt="..." style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@order.FoodItem.Name  <br /><span style="color: #555; font-size: 16px;"><i class="bi bi-geo-alt-fill"></i> @order.FoodItem.Restaurant.City</span> </h5>
+                        <p class="mt-auto d-flex justify-content-between"> <span class="rounded-2 text-danger p-2"><i class="bi bi-tag-fill"></i>Popular </span>
+                            <span class="btn btn-success d-flex">Rs @order.FoodItem.Price /-</span> <span class="d-flex  justify-content-end">
+                                @using (Html.BeginForm("AddToCart", "User", FormMethod.Post))
+                                {
+                                    <input type="hidden" name="foodItemId" value="@order.FoodItem.FoodId" />
+
+                                    <button type="submit" class="btn btn-warning d-flex"><i class="bi bi-cart"></i> Add to cart</button>
+                                }
+                            </span>
+                        </p>
+                       
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="text-center">
+    <h2 class="mb-4 text-uppercase fst-italic mt-3">Best Restaurants</h2>
+</div>
+<div class="d-flex justify-content-end">
+    <input type="text" id="searchInput" onkeyup="myFunction()" placeholder="Search for cities.." style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+</div>
+
+<div class="container" id="restaurantContainer">
+
+    @foreach (var item in Model)
+    {<div class="row" style="margin: 20px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s; background-image: url('data:image;base64,@item.Image'); background-size: cover;">
+            <div class="col-3" style="text-align: center;">
+                <img src="data:image;base64,@item.Image" alt="Image" width="100" height="100" style="border-radius: 50%; border: 2px solid #ddd; transition: transform .2s;" />
+            </div>
+            <div class="col-7" style="background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px;">
+                <h1 style="color: #333; font-size: 24px; font-weight: bold;">@Html.DisplayFor(modelItem => item.Name)  <span style="color: #555; font-size: 16px;"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(modelItem => item.City)</span></h1>
+                <p style="color: #777; font-size: 18px; font-style: italic;">@Html.DisplayFor(modelItem => item.Address)</p>
+                <city style="visibility:hidden">@Html.DisplayFor(modelItem => item.City)</city>
+            </div>
+            <div class="col-2" style="text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+
+                <a href="@Url.Action("AllFoodItems", "User", new { id = item.RestId })" class="btn-warning" style="color:white !important; padding: 10px 20px; text-decoration: none; border-radius: 5px; transition: background-color .3s;">
+                    <span style="font-size: 18px; font-weight: bold;">Menu</span>  <i class="bi bi-arrow-right-circle"></i>
+                </a>
+            </div>
+        </div>
+    }
+
+</div>
+
+<script>
+    function myFunction() {
+        var input, filter, container, cities, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        container = document.getElementById("restaurantContainer");
+        cities = container.getElementsByTagName('city');
+        for (i = 0; i < cities.length; i++) {
+            txtValue = cities[i].textContent || cities[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cities[i].closest('.row').style.display = ""; 
+            } else {
+                cities[i].closest('.row').style.display = "none"; 
+            }
+        }
+    }
+</script>
